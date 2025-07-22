@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
 
-ACCESS_TOKEN = 'BQC8O1Os_e-9hQsA2NxexNCmurpEdtTtXbR4qPBZUidAfktWbEJOva2ZpszChGbwp4Hrc2mefAYIFpYu6DIz9B6KWmmtaoiXkD_h8BCWLlon2A0kzW7GLdfBX_9Jqc5z3f'
-USER_ID = '31fxdva2g6awztsxw2wk4ypcitye'
+ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
+USER_ID = os.environ.get('USER_ID')
 
 @app.route('/crear_playlist', methods=['POST'])
 def crear_playlist():
@@ -19,6 +20,7 @@ def crear_playlist():
         "Content-Type": "application/json"
     }
 
+    # Crear la playlist
     response = requests.post(
         f"https://api.spotify.com/v1/users/{USER_ID}/playlists",
         headers=headers,
@@ -32,6 +34,7 @@ def crear_playlist():
     playlist = response.json()
     playlist_id = playlist.get("id")
 
+    # Agregar canciones
     tracks = uris * min(cantidad, 100)
     requests.post(
         f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
@@ -39,7 +42,10 @@ def crear_playlist():
         json={"uris": tracks}
     )
 
-    return jsonify({"playlist_url": playlist.get("external_urls", {}).get("spotify", "")})
+    return jsonify({
+        "playlist_url": playlist.get("external_urls", {}).get("spotify", ""),
+        "playlist_id": playlist_id
+    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
