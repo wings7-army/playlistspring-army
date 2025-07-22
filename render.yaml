@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: playlistspring-backend
+    env: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    envVars:
+      - key: ACCESS_TOKEN
+        value: BQC8O1Os_e-9hQsA2NxexNCmurpEdtTtXbR4qPBZUidAfktWbEJOva2ZpszChGbwp4Hrc2mefAYIFpYu6DIz9B6KWmmtaoiXkD_h8BCWLlon2A0kzW7GLdfBX_9Jqc5z3f
+      - key: USER_ID
+        value: 31fxdva2g6awztsxw2wk4ypcitye
