@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+import os  # Necesario para acceder a variables de entorno
 
 app = Flask(__name__)
 
@@ -38,7 +39,7 @@ def crear_playlist():
 
     playlist_id = playlist.get("id")
 
-    # Agregar canciones repetidas según cantidad
+    # Agregar canciones repetidas según cantidad (máx 100 en una sola llamada)
     tracks = uris * min(cantidad, 100)
     requests.post(
         f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
@@ -52,4 +53,5 @@ def crear_playlist():
     })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    port = int(os.environ.get('PORT', 10000))  # Usa el puerto que Render asigna
+    app.run(host='0.0.0.0', port=port)
